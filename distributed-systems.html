@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distributed Systems - Avenga</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #1a1a2e; overflow: hidden; }
+        .presentation { width: 100vw; height: 100vh; position: relative; }
+        .slide { width: 90%; max-width: 1200px; height: 85vh; background: white; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); box-shadow: 0 20px 60px rgba(0,0,0,0.5); padding: 60px; display: none; flex-direction: column; justify-content: center; overflow-y: auto; }
+        .slide.active { display: flex; }
+        .slide::-webkit-scrollbar { width: 8px; }
+        .slide::-webkit-scrollbar-track { background: #f1f1f1; }
+        .slide::-webkit-scrollbar-thumb { background: #E63312; border-radius: 4px; }
+        .avenga-logo { position: absolute; top: 30px; right: 50px; font-size: 1.8em; font-weight: 300; letter-spacing: -1px; z-index: 100; }
+        .slide-white .avenga-logo { color: #E63312; }
+        .slide-colored .avenga-logo { color: white; }
+        .slide-colored { background: linear-gradient(135deg, #E63312 0%, #FF6B35 30%, #4A148C 70%, #1a1a3e 100%); color: white; }
+        .slide-white { background: #F5F1E8; }
+        .slide h1 { color: inherit; font-size: 3.5em; margin-bottom: 20px; font-weight: 300; line-height: 1.2; }
+        .slide-colored h1 { color: white; }
+        .slide h2 { color: #E63312; font-size: 2.3em; margin-bottom: 25px; font-weight: 400; }
+        .slide h3 { color: #1a1a3e; font-size: 1.6em; margin: 20px 0 12px 0; font-weight: 500; }
+        .slide p, .slide li { font-size: 1.15em; line-height: 1.6; color: #333; margin-bottom: 12px; }
+        .slide-colored p, .slide-colored li { color: white; }
+        .slide ul { margin-left: 35px; }
+        .subtitle { color: rgba(255, 255, 255, 0.9); font-size: 1.6em; margin-top: -10px; font-weight: 300; }
+        .controls { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; z-index: 1000; background: rgba(0,0,0,0.8); padding: 10px 20px; border-radius: 50px; }
+        .btn { background: #E63312; color: white; border: none; padding: 15px 30px; border-radius: 50px; font-size: 1.1em; cursor: pointer; box-shadow: 0 5px 15px rgba(230, 51, 18, 0.3); transition: all 0.3s; font-weight: 600; }
+        .btn:hover { background: #C72A0E; transform: translateY(-2px); }
+        .slide-number { position: absolute; bottom: 20px; right: 30px; color: #999; font-size: 1em; }
+        .slide-colored .slide-number { color: rgba(255, 255, 255, 0.7); }
+        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; }
+        .box { background: white; padding: 20px; border-left: 4px solid #E63312; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .box h4 { color: #E63312; font-size: 1.3em; margin-bottom: 12px; font-weight: 600; }
+        .story-box { background: #FFF9F0; border: 3px solid #FF9800; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .story-box p { font-size: 1.2em; color: #1a1a3e; font-weight: 500; }
+        .problem-box { background: #FFEBEE; border-left: 5px solid #D32F2F; padding: 18px; margin: 15px 0; }
+        .problem-box::before { content: '❌ '; font-size: 1.3em; }
+        .solution-box { background: #E8F5E9; border-left: 5px solid #4CAF50; padding: 18px; margin: 15px 0; }
+        .solution-box::before { content: '✅ '; font-size: 1.3em; }
+        .diagram { text-align: center; margin: 25px 0; }
+        .node { display: inline-block; width: 90px; height: 90px; background: #E63312; color: white; border-radius: 50%; line-height: 90px; margin: 8px; font-size: 1.1em; font-weight: 600; }
+        .arrow { display: inline-block; font-size: 1.8em; color: #1a1a3e; margin: 0 8px; }
+        .slide-colored .arrow { color: white; }
+        .highlight { background: #FFF3E0; padding: 18px; border-left: 4px solid #FF9800; margin: 18px 0; }
+        .comparison-table { width: 100%; margin-top: 18px; border-collapse: collapse; font-size: 0.95em; }
+        .comparison-table th { background: #E63312; color: white; padding: 12px; font-size: 1.05em; }
+        .comparison-table td { padding: 12px; border: 1px solid #ddd; }
+        .comparison-table tr:nth-child(even) { background: #f9f9f9; }
+        .icon { font-size: 1.4em; margin-right: 8px; vertical-align: middle; }
+        .formula-box { background: linear-gradient(135deg, #E63312 0%, #FF6B35 100%); color: white; padding: 25px; border-radius: 8px; text-align: center; margin: 20px 0; }
+        .formula-box h3 { color: white; font-size: 2.2em; margin: 0; font-weight: 700; }
+        .formula-box p { color: white; font-size: 1em; margin-top: 8px; }
+        .node-rect {
+            display: inline-block; width: 200px; height: 110px; background: white; border: 3px solid #E63312; margin: 10px; padding: 10px; text-align: center; vertical-align: top; }
+        .node-rect h4 { color: #E63312; font-size: 1.3em; margin-bottom: 15px; }
+        .node-rect p { color: #1a1a3e; font-size: 1.1em; }
+        .steps { counter-reset: step; list-style: none; margin-left: 0; }
+        .steps li { counter-increment: step; position: relative; padding-left: 45px; margin-bottom: 15px; }
+        .steps li::before { content: counter(step); position: absolute; left: 0; top: 0; background: #E63312; color: white; width: 32px; height: 32px; border-radius: 50%; text-align: center; line-height: 32px; font-weight: 700; }
+        .app-header { background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%); color: white; padding: 10px 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+        .app-header h3 { color: white; margin: 0; font-size: 1.5em; }
+        a { color: #E63312; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .agenda-section { background: white; padding: 20px; margin: 15px 0; border-left: 5px solid #E63312; border-radius: 5px; }
+        .agenda-section h3 { color: #E63312; margin-bottom: 10px; font-size: 1.4em; }
+        .agenda-section ul { font-size: 1em; }
+        .part-topics { margin-top: 25px; }
+        .part-topics ul { font-size: 1.1em; line-height: 1.8; }
+        .state-box { display: inline-block; padding: 15px 25px; margin: 10px; border: 3px solid #E63312; border-radius: 10px; background: #FFF3E0; color: #1a1a3e; font-weight: 600; font-size: 1.1em; }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        
+        <!-- Slide 1: Title -->
+        <div class="slide slide-colored active">
+            <div class="avenga-logo">avenga</div>
+            <h1>Distributed Systems </h1>
+            <p class="subtitle">Building Reliable & Scalable Systems</p>
+            <h3 style="color: white;">Consensus Algorithms</h3>
+            <div class="diagram" style="margin-top: 50px;">
+                <div class="node">🚗 Cairo</div>
+                <span class="arrow">↔</span>
+                <div class="node">🚗 Alex</div>
+                <span class="arrow">↔</span>
+                <div class="node">🚗 Giza</div>
+            </div>
+            <p style="text-align: center; margin-top: 40px; font-size: 1.15em; opacity: 0.9;">A journey through distributed computing with a real-world ride-sharing platform</p>
+        </div>
+
+        <!-- Slide 2: Agenda -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>📋 Agenda</h2>
+            
+            <div class="agenda-section">
+                <h3>Part 1: Definitions & Characteristics</h3>
+            </div>
+
+            <div class="agenda-section">
+                <h3>Part 2: Basic Concepts</h3>
+            </div>
+
+            <div class="agenda-section">
+                <h3>Part 3: Raft Consensus Algorithm</h3>
+            </div>
+        </div>
+
+        <!-- Slide 3: Story Begins -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>🚗 Our Ride-Sharing Platform Story</h2>
+            
+            <div class="story-box">
+                <p><strong>🚕 You're building a ride-sharing app (like Uber/Careem)</strong></p>
+                <p style="margin-top: 12px;">Connect riders with drivers across multiple cities in Egypt</p>
+            </div>
+
+            <h3>How It Works</h3>
+            <div class="box">
+                <p><strong>Riders:</strong> Request rides via mobile app</p>
+                <p><strong>System:</strong> Finds nearest available driver in real-time</p>
+                <p><strong>Matching:</strong> Must happen in less than 10 seconds</p>
+                <p><strong>Tracking:</strong> Real-time location updates every second</p>
+                <p><strong>Payment:</strong> Process payment after ride completion</p>
+            </div>
+
+            <div class="highlight">
+                <strong>The Challenge:</strong> Friday night, 9 PM - 10,000 simultaneous ride requests across Cairo, Alexandria, and Giza. How do you handle this scale?
+            </div>
+        </div>
+
+        <!-- Slide 4: Part 1 Divider -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>Part 1</h2>
+
+            <div class="agenda-section">
+                <h3>Definitions & Characteristics</h3>
+                <p class="subtitle">Understanding Distributed Systems Fundamentals</p>
+                <ul>
+                    <li>🎯 Two Generals' Problem</li>
+                    <li>🔍 What is a Distributed System?</li>
+                    <li>💡 When & Why to Use DS?</li>
+                    <li>⚠️ Challenges & Trade-offs</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 5: Two Generals' Problem -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>Two Generals' Problem</h2>
+            
+            <!-- <p style="font-size: 1.3em; margin: 20px 0;">A classic thought experiment demonstrating the challenges of achieving consensus in distributed systems with unreliable communication.</p> -->
+
+            <div style="text-align: center; margin: 30px 0;">
+                <div style="background: white; border: 3px solid #E63312; padding: 15px; display: inline-block; max-width: 600px;">
+                    <div style="font-size: 3em; margin-bottom: 20px;">⚔️ 👑 ... 🏰 ... 👑 ⚔️</div>
+                    <p style="font-size: 1.1em; color: #1a1a3e;"><strong>Two armies on opposite sides of a valley</strong></p>
+                    <p style="font-size: 0.95em; margin-top: 15px;">Must coordinate attack time via messengers</p>
+                    <p style="font-size: 0.95em;">Messengers can be captured (message loss)</p>
+                </div>
+            </div>
+
+            <div class="box">
+                <h5>The Problem</h5>
+                <ul>
+                    <li>No way to guarantee both generals received and acknowledged the attack plan</li>
+                    <li>Demonstrates impossibility of perfect consensus with message loss</li>
+                    <li>Foundation for understanding distributed system challenges</li>
+                </ul>
+            </div>
+
+            <div class="highlight" style="font-size: 0.90em;">
+                <strong>Key Insight:</strong> In systems with unreliable communication, perfect consensus is impossible. We need probabilistic approaches and timeouts.
+            </div>
+        </div>
+
+        <!-- Slide 6: What is DS -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>What is a Distributed System?</h2>
+            
+            <p style="font-size: 1.4em; margin: 25px 0;"><strong>Definition:</strong> A collection of independent computers working together as one system.</p>
+            
+            <div class="app-header">
+                <h3>🚗 In Our App: Cairo Server + Alex Server + Giza Server = One Platform</h3>
+            </div>
+
+            <h3>Key Characteristics</h3>
+            <ul>
+                <li><strong>Components run concurrently</strong> - All servers process rides simultaneously</li>
+                <li><strong>Components operate independently</strong> - Each city has own servers</li>
+                <li><strong>No global clock</strong> - Different processing times</li>
+                <li><strong>Network communication</strong> - Servers communicate via internet</li>
+            </ul>
+
+            <div class="solution-box">
+                <strong>Benefit:</strong> Riders don't know which server matched them - it just works in seconds!
+            </div>
+        </div>
+
+        <!-- Slide 7: When to Use -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>When & Why to Use Distributed Systems?</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>❌ When NOT to Use</h3>
+                    <div class="box">
+                        <ul style="font-size: 1em;">
+                            <li>Small app (< 100 users)</li>
+                            <li>Single city</li>
+                            <li>Low traffic</li>
+                            <li>Can tolerate downtime</li>
+                            <li>Budget constraints</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <h3>✅ When to Use</h3>
+                    <div class="box">
+                        <ul style="font-size: 1em;">
+                            <li>High traffic (1000s requests/sec)</li>
+                            <li>Geographic distribution</li>
+                            <li>99.99% uptime required</li>
+                            <li>Real-time requirements</li>
+                            <li>Data too large for one server</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight" style="margin-top: 25px;">
+                <strong>Real Examples:</strong> Uber, Google Maps, Netflix, WhatsApp, Instagram, Banking Apps
+            </div>
+
+            <div class="story-box" style="margin-top: 20px;">
+                <p><strong>Our App:</strong> Started with 1 server. Then, we expanded to multiple cities and hit 1000s of simultaneous rides – that's when we had to build the app with Distributed Systems to handle the scale.</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: When & Why -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>When Build Our Riding System using DS?</h2>
+
+            <h3>Phase 1: Startup - Single Server ❌</h3>
+            <div class="problem-box">
+                <strong>One server in Cairo handling all Egypt</strong>
+                <ul style="margin-top: 10px;">
+                    <li>Server crashes during Friday rush → App down!</li>
+                    <li>Matching takes 2 minutes → Riders cancel</li>
+                    <li>Alexandria riders wait longer → Poor experience</li>
+                    <li>Can't handle > 500 simultaneous requests</li>
+                </ul>
+            </div>
+
+            <h3 style="margin-top: 25px;">Phase 2: Distributed System ✅</h3>
+            <div class="solution-box">
+                <strong>Multiple servers across cities</strong>
+                <ul style="margin-top: 10px;">
+                    <li>Cairo server crashes → Alex/Giza continue working!</li>
+                    <li>Matching in < 10 seconds → Happy riders</li>
+                    <li>Low latency everywhere → Local servers</li>
+                    <li>Handle 10,000+ simultaneous requests</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 9: DS Not Just DB -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>DS is NOT Just Databases!</h2>
+            
+            <p style="font-size: 1.25em; margin-bottom: 25px;">Distributed systems apply to <strong>every layer</strong> of your architecture:</p>
+
+            <div class="box" style="margin-bottom: 15px;">
+                <h4>💾 Database Layer</h4>
+                <p>Cassandra, PostgreSQL replication</p>
+            </div>
+
+            <div class="box" style="margin-bottom: 15px;">
+                <h4>📨 Message Layer</h4>
+                <p>Kafka, RabbitMQ clusters (real-time location updates, ride events)</p>
+            </div>
+
+            <div class="box" style="margin-bottom: 15px;">
+                <h4>⚡ Cache Layer</h4>
+                <p>Redis cluster, Memcached (Active rides, driver locations)</p>
+            </div>
+
+            <div class="story-box">
+                <p><strong>Our Architecture:</strong> Distributed databases (Replicate Driver Data) + Distributed caching (Active rides, Driver Locations) + Distributed messaging (Real-time location updates, Ride Events) </p>
+            </div>
+        </div>
+
+        <!-- Slide 10: Challenges -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>Challenges in Distributed Systems</h2>
+            
+            <div class="two-column">
+                <div class="box">
+                    <h4>🔄 Consistency</h4>
+                    <ul style="font-size: 0.95em;">
+                        <li>Data replication</li>
+                        <li>Maintaining agreement</li>
+                        <li>Conflict resolution</li>
+                    </ul>
+                    <div class="problem-box" style="margin-top: 12px; font-size: 0.9em;">
+                        Cairo shows driver available, Alex shows unavailable!
+                    </div>
+                </div>
+                <div class="box">
+                    <h4>⚠️ Failure Handling</h4>
+                    <ul style="font-size: 0.95em;">
+                        <li>Server crashes</li>
+                        <li>Byzantine failures</li>
+                        <li>Data corruption</li>
+                    </ul>
+                    <div class="problem-box" style="margin-top: 12px; font-size: 0.9em;">
+                        Matching server crashes mid-request!
+                    </div>
+                </div>
+            </div>
+            <div class="two-column" style="margin-top: 18px;">
+                <div class="box">
+                    <h4>⏱️ Synchronization</h4>
+                    <ul style="font-size: 0.95em;">
+                        <li>Clock sync</li>
+                        <li>Event ordering</li>
+                        <li>Coordination</li>
+                    </ul>
+                    <div class="problem-box" style="margin-top: 12px; font-size: 0.9em;">
+                        Which driver accepted first?
+                    </div>
+                </div>
+                <div class="box">
+                    <h4>🌐 Network Issues</h4>
+                    <ul style="font-size: 0.95em;">
+                        <li>Network partitions</li>
+                        <li>Message delays</li>
+                        <li>Packet loss</li>
+                    </ul>
+                    <div class="problem-box" style="margin-top: 12px; font-size: 0.9em;">
+                        Cairo ↔ Alex connection fails during ride matching!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Consistency -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>Consistency: Strong vs Eventual</h2>
+            
+            <div class="two-column">
+                <div class="box">
+                    <h4>🔒 Strong Consistency</h4>
+                    <p style="margin-bottom: 12px;">All nodes see same data immediately</p>
+                    <ul style="font-size: 0.95em;">
+                        <li>Linearizability</li>
+                        <li>Always up-to-date</li>
+                        <li>May impact speed</li>
+                    </ul>
+                    <div class="solution-box" style="margin-top: 15px; font-size: 0.9em;">
+                        <strong>Use for:</strong> Financial Transactions <br>When State A = State B (State Cairo = State Alex)
+                    </div>
+                </div>
+                <div class="box">
+                    <h4>🔓 Eventual Consistency</h4>
+                    <p style="margin-bottom: 12px;">Nodes eventually see same data</p>
+                    <ul style="font-size: 0.95em;">
+                        <li>Higher availability</li>
+                        <li>Better performance</li>
+                        <li>Temporary differences OK</li>
+                    </ul>
+                    <div class="solution-box" style="margin-top: 15px; font-size: 0.9em;">
+                        <strong>Use for:</strong> Social Media <br>When State A ≠ State B (State Cairo ≠ State Alex)
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight" style="margin-top: 20px;">
+                <strong>Our Choice:</strong> <br><strong>Strong Consistency</strong> for payment processing - prevents double booking, <br><strong>Eventual Consistency</strong> for driver rating - can wait a few seconds
+            </div>
+        </div>
+
+        <!-- Slide 12: Fault Tolerance -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>🛡️ Fault Tolerance</h2>
+            
+            <p style="font-size: 1.3em; margin: 20px 0;"><strong>Definition:</strong> The ability of a system to continue operating correctly despite failures</p>
+
+            <div class="app-header">
+                <h3>⚡ Scenario: Cairo Server Crashes During Rush Hour</h3>
+            </div>
+
+            <div class="problem-box">
+                <strong>Without Fault Tolerance:</strong> All Cairo rides stop. 5,000 riders stranded. Drivers lose money. Company loses reputation.
+            </div>
+
+            <div class="solution-box">
+                <strong>With Fault Tolerance:</strong> Alex & Giza servers take over Cairo traffic. Riders experience 2-second delay but rides continue. Nobody notices!
+            </div>
+
+            <h3 style="margin-top: 25px;">Types of Failures</h3>
+            <div class="two-column">
+                <div class="box">
+                    <h4>Fail-Stop (Hard Failures)</h4>
+                    <p style="font-size: 0.95em;">Node stops, others detect -> Easier to handle</p>
+                    <ul style="font-size: 0.9em; margin-top: 8px;">
+                        <li>Server crash</li>
+                        <li>Network disconnect</li>
+                        <li>Power outage</li>
+                    </ul>
+                </div>
+                <div class="box">
+                    <h4>Byzantine (Gray Failures)</h4>
+                    <p style="font-size: 0.95em;">Node behaves incorrectly -> Much harder to handle</p>
+                    <ul style="font-size: 0.9em; margin-top: 8px;">
+                        <li>Corrupted data</li>
+                        <li>Software bugs</li>
+                        <li>Malicious attacks</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Part 2 Divider -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>Part 2</h2>
+
+            <div class="agenda-section">
+                <h3>Basic Concepts</h3>
+                <p class="subtitle">Building Blocks of Distributed Systems</p>
+                <ul>
+                    <li>🖥️ Nodes & State</li>
+                    <li>🔄 State Machine Replication</li>
+                    <li>📜 Distributed Logs</li>
+                    <li>🎯 Quorums & Majority</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 14: Nodes & State -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>Nodes/Servers: Compute + State</h2>
+
+            <div class="diagram" style="margin: 20px 0;">
+                <div class="node-rect">
+                    <h4>Node A</h4>
+                    <p style="font-size: 1.3em; margin-top: 10px;"><strong>Compute + State</strong></p>
+                </div>
+                <div class="node-rect">
+                    <h4>Node B</h4>
+                    <p style="font-size: 1.3em; margin-top: 10px;"><strong>Compute + State</strong></p>
+                </div>
+            </div>
+            
+            <div class="two-column">
+                <div class="box">
+                    <h4>⚡ Compute</h4>
+                    <p>Processing power</p>
+                    <ul style="font-size: 0.95em; margin-top: 12px;">
+                        <li>CPU resources</li>
+                        <li>Application logic</li>
+                        <li>Route calculation</li>
+                    </ul>
+                    <div class="solution-box" style="margin-top: 12px; font-size: 0.9em;">
+                        Find nearest driver within 2km radius
+                    </div>
+                </div>
+                <div class="box">
+                    <h4>💾 State</h4>
+                    <p>Data storage</p>
+                    <ul style="font-size: 0.95em; margin-top: 12px;">
+                        <li>Memory/Disk storage</li>
+                        <li>Driver locations</li>
+                        <li>Rider profiles</li>
+                    </ul>
+                    <div class="solution-box" style="margin-top: 12px; font-size: 0.9em;">
+                        Store: Driver A at (30.0444, 31.2357)
+                    </div>
+                </div>
+            </div>
+
+            <div class="app-header" style="margin-top: 25px;">
+                <h3>Cairo Node + Alex Node + Giza Node = Complete System</h3>
+            </div>
+
+            <div class="highlight">
+                <strong>Critical:</strong> All nodes must have consistent view of driver availability to prevent double-booking!
+            </div>
+        </div>
+
+        <!-- Slide 15: SMR -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>State Machine Replication (SMR)</h2>
+            
+            <p style="font-size: 1.3em; margin: 5px 0;"><strong>Concept:</strong> Multiple servers execute the <strong>same commands</strong> in the <strong>same order</strong> to maintain identical state</p>
+
+            <div style="text-align: center; margin: 3px 0;">
+                <img src="SMR.png" alt="SMR Diagram" class="smr-diagram" style="border: 2px solid #E63312; padding: 5px; background: white;"/>
+            </div>
+            <!-- <div class="diagram">
+                <div style="text-align: center;">
+                    <div style="font-size: 1.2em; margin-bottom: 15px;">Rider Request: Match me with driver</div>
+                    <div style="font-size: 2em; color: #E63312;">↓</div>
+                    <div style="margin: 20px 0;">
+                        <div class="node">Cairo</div>
+                        <div class="node">Alex</div>
+                        <div class="node">Giza</div>
+                    </div>
+                    <div style="font-size: 1.1em; margin-top: 15px;">All execute: Match Rider A with Driver B</div>
+                </div>
+            </div> -->
+
+            <div class="formula-box">
+                <div style="font-size: 0.90em; margin-bottom: 5px;">Rider A Request: Match me with driver</div>
+                <h3><strong>Current State</strong> + <strong>Command</strong> = Next State</h3>
+                <p>(Driver B available) <strong>+</strong> (Assign Driver B to Rider A) <strong>=</strong> <strong>(Driver B now busy)</strong></p>
+            </div>
+
+            <div class="solution-box">
+                All nodes reach EXACT same state - Driver B marked as busy everywhere!
+            </div>
+        </div>
+
+        <!-- Slide 16: Distributed Logs Part 1 -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>📜 Distributed Logs</h2>
+            
+            <p style="font-size: 1.25em; margin: 10px 0;"><strong>Definition:</strong> Append-only, ordered records</p>
+
+            <div class="app-header">
+                <h3>📖 Server Recovery Scenario</h3>
+            </div>
+
+            <div class="story-box">
+                <p><strong>Scenario:</strong> Cairo server crashed for 30 minutes during rush hour. Alex & Giza handled all requests.</p>
+                <p style="margin-top: 9px;"><strong>Question:</strong> How does Cairo catch up when it restarts?</p>
+            </div>
+
+            <div class="solution-box">
+                <strong>Answer: Read the Distributed Log!</strong>
+                <p style="margin-top: 9px; font-family: monospace; font-size: 0.9em;">
+                    Log 1: Rider Ahmed matched with Driver Mohamed<br>
+                    Log 2: Rider Sara matched with Driver Ali<br>
+                    Log 3: Rider Hassan matched with Driver Youssef<br>
+                    Log 4: Driver Mohamed completed ride<br>
+                    ...replay 500 events...
+                </p>
+            </div>
+
+            <h3 style="margin-top: 8px;">Key Characteristics</h3>
+            <ul>
+                <li><strong>Append-only:</strong> Never modify, only add</li>
+                <li><strong>Sequential:</strong> Ordered by time</li>
+                <li><strong>Durable:</strong> Survives crashes</li>
+                <li><strong>Replayable:</strong> Can replay from any point!</li>
+            </ul>
+        </div>
+
+        <!-- Slide 17: Distributed Logs Part 2 -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>Distributed Log</h2> <!-- vs Message Queue -->
+            
+            <h3>Key Use Cases</h3>
+            <ul style="font-size: 1.05em;">
+                <li><strong>Event Sourcing:</strong> All ride events (requested, matched, started, completed)</li>
+                <li><strong>Real-time Updates:</strong> Driver location streaming</li>
+                <li><strong>Data Replication:</strong> Sync ride data across cities</li>
+                <li><strong>Audit Trail:</strong> Complete history for dispute resolution</li>
+            </ul>
+
+            <h3 style="margin-top: 22px;">Kafka (Distributed Log)</h3> <!-- VS RabbitMQ -->
+            <table class="comparison-table">
+                <tr>
+                    <th>Feature</th>
+                    <th>Kafka</th>
+                    <!-- <th>RabbitMQ (Message Queue)</th> -->
+                </tr>
+                <tr>
+                    <td><strong>Retention</strong></td>
+                    <td>Long-term with replay</td>
+                    <!-- <td>Deleted after consumption</td> -->
+                </tr>
+                <tr>
+                    <td><strong>Ordering</strong></td>
+                    <td>Strict order maintained</td>
+                    <!-- <td>Best-effort ordering</td> -->
+                </tr>
+                <tr>
+                    <td><strong>Replay</strong></td>
+                    <td>✅ Can replay from any point</td>
+                    <!-- <td>❌ Cannot replay</td> -->
+                </tr>
+                <tr>
+                    <td><strong>Use Case</strong></td>
+                    <td>Location updates, event streaming</td>
+                    <!-- <td>Task distribution, notifications</td> -->
+                </tr>
+            </table>
+
+            <div class="story-box" style="margin-top: 20px;">
+                <p><strong>Our Choice:</strong> Kafka for location updates & ride events so we can always replay and recover!</p>
+            </div>
+        </div>
+
+        <!-- Slide 18: Adding Servers -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>Adding Servers (Scaling!)</h2>
+            
+            <div class="app-header">
+                <h3>🚀 Expanding to Mansoura & Aswan!</h3>
+            </div>
+
+            <h3>Methodologies</h3>
+            
+            <div class="box">
+                <h4>1. Copy-Based Replication</h4>
+                <ul style="font-size: 0.95em;">
+                    <li>Take snapshot of Cairo database</li>
+                    <li>Transfer all driver/rider data to new city</li>
+                    <li>New server catches up with recent rides</li>
+                    <li>Joins cluster when synchronized</li>
+                </ul>
+            </div>
+
+            <div class="box" style="margin-top: 5px;">
+                <h4>2. Log-Based Replication</h4>
+                <ul style="font-size: 0.95em;">
+                    <li>New city server starts from log beginning</li>
+                    <li>Replays ALL ride events in order</li>
+                    <li>Reaches same state as other cities</li>
+                    <li>Now all 5 cities have identical data!</li>
+                </ul>
+            </div>
+
+            <div class="solution-box" style="margin-top: 5px;">
+                System can now handle 2 city failures! Even if Cairo & Alex crash, Giza + Mansoura + Aswan continue!
+            </div>
+        </div>
+
+        <!-- Slide 19: Quorums -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>Quorums & Majority</h2>
+            
+            <p style="font-size: 1.2em; margin: 18px 0;"><strong>Quorum:</strong> Minimum nodes that must agree</p>
+
+            <div class="formula-box">
+                <h3>R + W > N</h3>
+                <p><strong>R:</strong> Read quorum | <strong>W:</strong> Write quorum | <strong>N:</strong> Total nodes</p>
+                <p style="margin-top: 12px; font-size: 1.1em;">Ensures read/write overlap</p>
+            </div>
+
+            <div class="app-header">
+                <h3>💡 With 5 City Servers</h3>
+            </div>
+
+            <div class="two-column">
+                <div class="box">
+                    <h4>Example: N=5, W=2</h4>
+                    <p style="font-size: 0.95em; margin: 10px 0;">R + W > N → R + 2 > 5 → <strong>R = 4</strong></p>
+                    <div class="solution-box" style="font-size: 0.9em;">
+                        Fast ride matching (only 2 cities confirm), but location reads need 4 cities
+                    </div>
+                </div>
+                <div class="box">
+                    <h4>Majority: N=5 → Need 3</h4>
+                    <p style="font-size: 0.95em; margin: 10px 0;">(N/2) + 1 = (5/2) + 1 = <strong>3</strong></p>
+                    <div class="solution-box" style="font-size: 0.9em;">
+                        Before confirming ride match, 3 cities must agree. Can tolerate 2 failures!
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight" style="margin-top: 18px;">
+                <strong>Key:</strong> Majority prevents double-booking drivers across cities!
+            </div>
+        </div>
+
+        <!-- Slide 20: Quorum vs Majority -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>Quorum vs Majority Comparison</h2>
+
+            <p style="font-size: 1.2em; margin: 18px 0;"><strong>Majority</strong> is one type of <strong>Quorum</strong></p>
+
+            <table class="comparison-table">
+                <tr>
+                    <th>Aspect</th>
+                    <th>Quorum (Flexible)</th>
+                    <th>Majority (Fixed)</th>
+                </tr>
+                <tr>
+                    <td><strong>Formula</strong></td>
+                    <td>R + W > N (customizable)</td>
+                    <td>Always (N/2) + 1</td>
+                </tr>
+                <tr>
+                    <td><strong>Read Performance</strong></td>
+                    <td>Can optimize (lower R)</td>
+                    <td>Always requires majority</td>
+                </tr>
+                <tr>
+                    <td><strong>Write Performance</strong></td>
+                    <td>Can optimize (lower W)</td>
+                    <td>Always requires majority</td>
+                </tr>
+                <tr>
+                    <td><strong>Use Case</strong></td>
+                    <td>Cassandra, DynamoDB</td>
+                    <td>Raft, Paxos consensus</td>
+                </tr>
+                <tr>
+                    <td><strong>Consistency</strong></td>
+                    <td>Tunable</td>
+                    <td>Strong guaranteed</td>
+                </tr>
+            </table>
+
+            <div class="story-box" style="margin-top: 20px;">
+                <p><strong>Our Decision:</strong> Majority (3 of 5) for ride matching to ensure no driver gets double-booked!</p>
+            </div>
+        </div>
+
+        <!-- Slide 21: Part 3 Divider -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>Part 3</h2>
+
+            <div class="agenda-section">
+                <h3>Raft Consensus Algorithm</h3>
+                <p class="subtitle">Achieving Agreement in Distributed Systems</p>
+                <ul style="color: white;">
+                    <li>👥 Nodes</li>
+                    <li>🗳️ Key Concepts</li>
+                    <li>🌐 Interactive Visualization</li>
+                </ul>
+            </div>
+        </div>
+
+
+
+        <!-- Slide 22: Raft Components & Definitions -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>Raft: Nodes</h2>
+
+            <div style="text-align: center; background: white; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                <div class="state-box">👥 Follower</div>
+                <span class="arrow">→</span>
+                <div class="state-box">🗳️ Candidate</div>
+                <span class="arrow">→</span>
+                <div class="state-box">👑 Leader</div>
+            </div>
+
+            <div class="two-column">
+                <div class="box">
+                    <h4>👑 Leader</h4>
+                    <ul style="font-size: 0.9em;">
+                        <li>Handles all client requests</li>
+                        <li>Manages log replication</li>
+                        <li>Sends heartbeats to followers</li>
+                    </ul>
+                </div>
+                <div class="box">
+                    <h4>👥 Follower</h4>
+                    <ul style="font-size: 0.9em;">
+                        <li>Passive, responds to requests</li>
+                        <li>Replicates Leader's log</li>
+                        <li>Can become Candidate if no heartbeat</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="box" style="margin-top: 15px;">
+                <h4>🗳️ Candidate</h4>
+                <p style="font-size: 0.9em;">Intermediate state - tries to become Leader during elections</p>
+            </div>
+        </div>
+
+        <!-- Slide 23: Raft Key Concepts -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>Raft: Key Concepts</h2>
+
+            <div class="two-column">
+                <div class="box">
+                    <h4>📅 Term</h4>
+                    <p style="font-size: 0.95em;">Logical clock that increments with each election. Prevents conflicts.</p>
+                </div>
+                <div class="box">
+                    <h4>🗳️ Elections</h4>
+                    <p style="font-size: 0.95em;">Process to choose new Leader when current Leader fails or times out.</p>
+                </div>
+            </div>
+
+            <div class="two-column" style="margin-top: 15px;">
+                <div class="box">
+                    <h4>✅ Majority</h4>
+                    <p style="font-size: 0.95em;"><strong>(N/2) + 1</strong> nodes must agree for consensus</p>
+                </div>
+                <div class="box">
+                    <h4>📝 Log Replication</h4>
+                    <p style="font-size: 0.95em;">Leader replicates log entries to all Followers to maintain consistency.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 24: References Raft -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>Raft Consensus Resources</h2>
+
+            <h3>📄 Papers</h3>
+            <div class="box" style="margin-bottom: 12px;">
+                <h4>The Raft Consensus Algorithm</h4>
+                <p style="font-size: 0.95em;"><a href="https://raft.github.io/raft.pdf" target="_blank">raft.github.io/raft.pdf</a></p>
+            </div>
+
+            <h3>🌐 Interactive Visualization</h3>
+            <div class="box" style="margin-bottom: 12px;">
+                <h4>Secret Lives of Data - Raft Visualization</h4>
+                <p style="font-size: 0.95em;"><a href="http://thesecretlivesofdata.com/raft/" target="_blank">Amazing Interactive Demo!</a></p>
+                <p style="font-size: 0.95em;"><a href="https://raft.github.io/" target="_blank">Raft cluster!</a></p>
+            </div>
+
+            <div class="highlight" style="margin-top: 20px;">
+                <strong>Recommendation:</strong> Watch the Secret Lives of Data visualization - it's the best way to understand Raft visually!
+            </div>
+        </div>
+
+        <!-- Slide 18: PAXOS -->
+        <!-- <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>🤝 Paxos Consensus Protocol</h2>
+            
+            <p style="font-size: 1.25em; margin: 18px 0;"><strong>Goal:</strong> All 5 city servers must agree on ride assignment</p>
+
+            <div class="app-header">
+                <h3>💡 Scenario: Driver Ahmed Available - Which Rider Gets Him?</h3>
+            </div>
+
+            <h3>Paxos Flow</h3>
+            <ol class="steps" style="font-size: 1em;">
+                <li><strong>Prepare:</strong> Cairo proposes "Assign Driver Ahmed to Rider Sara" (proposal #42)</li>
+                <li><strong>Promise:</strong> Alex, Giza, Mansoura promise "OK, we'll accept if no higher proposal"</li>
+                <li><strong>Accept Request:</strong> Cairo sends "Please accept: Ahmed → Sara"</li>
+                <li><strong>Accepted:</strong> Majority (3 cities) accept and log the assignment</li>
+                <li><strong>Commit:</strong> Once 3/5 accept → assignment committed</li>
+                <li><strong>Replicate:</strong> All cities update: Driver Ahmed now busy</li>
+                <li><strong>Response:</strong> Confirm to Rider Sara "Driver found!"</li>
+            </ol>
+
+            <div class="two-column" style="margin-top: 20px;">
+                <div class="solution-box" style="font-size: 0.95em;">
+                    <strong>N=5 cities:</strong> Need 3 to agree. Tolerates 2 city failures!
+                </div>
+                <div class="solution-box" style="font-size: 0.95em;">
+                    <strong>Result:</strong> No double-booking even if cities temporarily disconnect!
+                </div>
+            </div>
+        </div> -->
+
+        <!-- Slide 25: Real-World -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>Real-World Distributed Systems</h2>
+
+            <div class="box" style="margin-bottom: 15px;">
+                <h4>🔍 Google Maps</h4>
+                <p style="font-size: 1em;">Real-time traffic data from billions of devices worldwide</p>
+            </div>
+
+            <div class="box" style="margin-bottom: 15px;">
+                <h4>💬 WhatsApp</h4>
+                <p style="font-size: 1em;">2 billion users, distributed message delivery, eventual consistency</p>
+            </div>
+
+            <div class="box" style="margin-bottom: 15px;">
+                <h4>☸️ Kubernetes</h4>
+                <p style="font-size: 1em;">Uses etcd with Raft for cluster management</p>
+            </div>
+
+            <div class="box" style="margin-bottom: 15px;">
+                <h4>🛒 Amazon</h4>
+                <p style="font-size: 1em;">DynamoDB with quorum-based replication</p>
+            </div>
+
+            <div class="highlight" style="margin-top: 25px;">
+                <p style="font-size: 1.2em;"><strong>Just like our ride-sharing app,</strong> these companies use DS for reliability, scale, and fault tolerance!</p>
+            </div>
+        </div>
+
+        <!-- Slide 26: Summary -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>Key Takeaways</h2>
+            
+            <div class="app-header">
+                <h3>🎯 Our Ride-Sharing Journey</h3>
+            </div>
+
+            <h3>What We Covered</h3>
+            <ul style="font-size: 1.05em;">
+                <li><strong>DS Definition:</strong> Multiple computers working as one</li>
+                <li><strong>When to use:</strong> Scale, availability, geographic distribution</li>
+                <li><strong>DS everywhere:</strong> Apps, databases, caches, messaging</li>
+                <li><strong>Strong Consistency vs Eventual Consistency</strong> </li>
+                <li><strong>Fault Tolerance</strong></li>
+                <li><strong>State Machine Replication:</strong> Same commands → Same state</li>
+                <li><strong>Distributed Logs:</strong> Replay events to recover</li>
+                <li><strong>Raft:</strong> Consensus Algorithms - Coordinate distributed decisions</li>
+            </ul>
+
+            <h3 style="margin-top: 22px;">Future Topics</h3>
+            <ul style="font-size: 1em;">
+                <li>CAP Theorem deep dive</li>
+                <li>Consensus Algorithms (Paxos, Proof of Work (PoW))</li>
+                <li>Time & Clocks in distributed systems</li>
+                <li>Distributed transactions (2PC, 3PC, TCC, Saga)</li>
+            </ul>
+        </div>
+
+        <!-- Slide 27: Remember -->
+        <!-- <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>Remember</h2>
+            
+            <div style="text-align: center; margin: 40px 0;">
+                <div style="background: linear-gradient(135deg, #E63312 0%, #FF6B35 100%); color: white; padding: 40px; border-radius: 15px;">
+                    <h3 style="color: white; font-size: 2em; margin-bottom: 25px;">Choose Your Trade-offs Wisely</h3>
+                    <p style="color: white; font-size: 1.3em; line-height: 1.6;">
+                        Every distributed system involves trade-offs:<br>
+                        <strong>Consistency vs Availability vs Partition Tolerance</strong>
+                    </p>
+                </div>
+            </div>
+
+            <div class="story-box" style="margin-top: 30px;">
+                <p style="font-size: 1.25em;">🚗 <strong>For our ride-sharing app:</strong> Strong consistency for matching, fault tolerance for uptime, geographic distribution for low latency!</p>
+            </div>
+
+            <div class="highlight" style="margin-top: 25px; text-align: center;">
+                <p style="font-size: 1.3em;"><strong>Your use case determines your architecture!</strong></p>
+            </div>
+        </div> -->
+
+        <!-- Slide 27: References -->
+        <div class="slide slide-white">
+            <div class="avenga-logo">avenga</div>
+            <h2>📚 References & Learning</h2>
+            
+            <h3>🎥 Video Courses</h3>
+            <div class="two-column">
+                <div class="box" style="margin-bottom: 15px;">
+                    <h4>Ahmed Farghal - Distributed Systems (Arabic)</h4>
+                    <p style="font-size: 0.95em;"><a href="https://www.youtube.com/playlist?list=PLald6EODoOJW3alE1oPAkGF0bHZkPIeTK" target="_blank">YouTube Playlist</a></p>
+                </div>
+                
+                <div class="box" style="margin-bottom: 15px;">
+                    <h4>Martin Kleppmann - DS Lecture Series</h4>
+                    <p style="font-size: 0.95em;"><a href="https://youtube.com/playlist?list=PLeKd45zvjcDFUEv_ohr_HdUFe97RItdiB" target="_blank">YouTube Playlist</a></p>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 10px;">📖 Books (Must-Read)</h3>
+            <div class="two-column">
+                <div class="box">
+                    <h4>Distributed Systems (3rd Edition)</h4>
+                    <p style="font-size: 0.9em;">By Maarten van Steen & Andrew S. Tanenbaum<br>Classic textbook with theory + practice</p>
+                </div>
+                <div class="box">
+                    <h4>Designing Data-Intensive Applications</h4>
+                    <p style="font-size: 0.9em;">By Martin Kleppmann<br><strong>The Bible of DS</strong> - covers replication, partitioning, consensus</p>
+                </div>
+            </div>
+
+            <h3>🌐 Online Resources</h3>
+            <div class="box">
+                <h4>GeeksforGeeks - System Design Consistency</h4>
+                <a href="https://www.geeksforgeeks.org/system-design/consistency-in-system-design/" style="color: #E63312; text-decoration: none; font-weight: 600;">→ Read Article</a>
+                <p style="font-size: 0.9em; margin-top: 5px;">Quick reference for consistency models</p>
+            </div>
+        </div>
+
+
+        <!-- Slide 28: Questions -->
+        <div class="slide slide-colored">
+            <div class="avenga-logo">avenga</div>
+            <h1>Questions?</h1>
+            <div style="text-align: center; margin-top: 50px;">
+                <p style="font-size: 1.5em;">Thank you for your attention!</p>
+                <div class="diagram" style="margin-top: 50px;">
+                    <div class="node">💬</div>
+                    <div class="node">🤔</div>
+                    <div class="node">💡</div>
+                </div>
+                <p style="font-size: 1.2em; margin-top: 50px; opacity: 0.9;">Let's discuss your distributed systems challenges</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button class="btn" onclick="prevSlide()">← Previous</button>
+        <button class="btn" onclick="nextSlide()">Next →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            updateSlideNumber();
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        function updateSlideNumber() {
+            document.querySelectorAll('.slide-number').forEach((num, index) => {
+                if (index === currentSlide) {
+                    num.textContent = `${currentSlide + 1} / ${totalSlides}`;
+                }
+            });
+        }
+
+        slides.forEach((slide, index) => {
+            const slideNum = document.createElement('div');
+            slideNum.className = 'slide-number';
+            slideNum.textContent = `${index + 1} / ${totalSlides}`;
+            slide.appendChild(slideNum);
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                showSlide(0);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                showSlide(totalSlides - 1);
+            }
+        });
+
+        updateSlideNumber();
+    </script>
+</body>
+</html>
