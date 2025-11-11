@@ -9,7 +9,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #1a1a2e; overflow: hidden; }
         .presentation { width: 100vw; height: 100vh; position: relative; }
-        .slide { width: 90%; max-width: 1200px; height: 85vh; background: white; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); box-shadow: 0 20px 60px rgba(0,0,0,0.5); padding: 60px; display: none; flex-direction: column; justify-content: center; overflow-y: auto; }
+        .slide { width: 90%; max-width: 1200px; height: 90vh; background: white; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); box-shadow: 0 20px 60px rgba(0,0,0,0.5); padding: 50px 60px; display: none; flex-direction: column; justify-content: flex-start; overflow-y: auto; }
+        .slide { max-height: 100vh; }
         .slide.active { display: flex; }
         .slide::-webkit-scrollbar { width: 8px; }
         .slide::-webkit-scrollbar-track { background: #f1f1f1; }
@@ -21,31 +22,31 @@
         .slide-white { background: #F5F1E8; }
         .slide h1 { color: inherit; font-size: 3.5em; margin-bottom: 20px; font-weight: 300; line-height: 1.2; }
         .slide-colored h1 { color: white; }
-        .slide h2 { color: #E63312; font-size: 2.3em; margin-bottom: 25px; font-weight: 400; }
-        .slide h3 { color: #1a1a3e; font-size: 1.6em; margin: 20px 0 12px 0; font-weight: 500; }
-        .slide p, .slide li { font-size: 1.15em; line-height: 1.6; color: #333; margin-bottom: 12px; }
+        .slide h2 { color: #E63312; font-size: 2.3em; margin-bottom: 15px; font-weight: 400; }
+        .slide h3 { color: #1a1a3e; font-size: 1.6em; margin: 15px 0 10px 0; font-weight: 500; }
+        .slide p, .slide li { font-size: 1.15em; line-height: 1.6; color: #333; margin-bottom: 8px; }
         .slide-colored p, .slide-colored li { color: white; }
-        .slide ul { margin-left: 35px; }
+        .slide ul { margin-left: 30px; margin-bottom: 8px; }
         .subtitle { color: rgba(255, 255, 255, 0.9); font-size: 1.6em; margin-top: -10px; font-weight: 300; }
         .controls { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; z-index: 1000; background: rgba(0,0,0,0.8); padding: 10px 20px; border-radius: 50px; }
         .btn { background: #E63312; color: white; border: none; padding: 10px 15px; border-radius: 50px; font-size: 1.1em; cursor: pointer; box-shadow: 0 5px 15px rgba(230, 51, 18, 0.3); transition: all 0.3s; font-weight: 600; }
         .btn:hover { background: #C72A0E; transform: translateY(-2px); }
         .slide-number { position: absolute; bottom: 20px; right: 30px; color: #999; font-size: 1em; }
         .slide-colored .slide-number { color: rgba(255, 255, 255, 0.7); }
-        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; }
-        .box { background: white; padding: 20px; border-left: 4px solid #E63312; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 12px; }
+        .box { background: white; padding: 18px; border-left: 4px solid #E63312; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 10px; }
         .box h4 { color: #E63312; font-size: 1.3em; margin-bottom: 12px; font-weight: 600; }
-        .story-box { background: #FFF9F0; border: 3px solid #FF9800; padding: 20px; margin: 20px 0; border-radius: 8px; }
-        .story-box p { font-size: 1.2em; color: #1a1a3e; font-weight: 500; }
-        .problem-box { background: #FFEBEE; border-left: 5px solid #D32F2F; padding: 18px; margin: 15px 0; }
+        .story-box { background: #FFF9F0; border: 3px solid #FF9800; padding: 15px 18px; margin: 12px 0; border-radius: 8px; }
+        .story-box p { font-size: 1.2em; color: #1a1a3e; font-weight: 500; margin-bottom: 8px; }
+        .problem-box { background: #FFEBEE; border-left: 5px solid #D32F2F; padding: 15px; margin: 10px 0; }
         .problem-box::before { content: '❌ '; font-size: 1.3em; }
-        .solution-box { background: #E8F5E9; border-left: 5px solid #4CAF50; padding: 18px; margin: 15px 0; }
+        .solution-box { background: #E8F5E9; border-left: 5px solid #4CAF50; padding: 15px; margin: 10px 0; }
         .solution-box::before { content: '✅ '; font-size: 1.3em; }
-        .diagram { text-align: center; margin: 25px 0; }
-        .node { display: inline-block; width: 90px; height: 90px; background: #E63312; color: white; border-radius: 50%; line-height: 90px; margin: 8px; font-size: 1.1em; font-weight: 600; }
-        .arrow { display: inline-block; font-size: 1.8em; color: #1a1a3e; margin: 0 8px; }
+        .diagram { text-align: center; margin: 12px 0; }
+        .node { display: inline-block; width: 80px; height: 80px; background: #E63312; color: white; border-radius: 50%; line-height: 80px; margin: 5px; font-size: 1em; font-weight: 600; }
+        .arrow { display: inline-block; font-size: 1.5em; color: #1a1a3e; margin: 0 5px; }
         .slide-colored .arrow { color: white; }
-        .highlight { background: #FFF3E0; padding: 18px; border-left: 4px solid #FF9800; margin: 18px 0; }
+        .highlight { background: #FFF3E0; padding: 15px; border-left: 4px solid #FF9800; margin: 12px 0; }
         .comparison-table { width: 100%; margin-top: 18px; border-collapse: collapse; font-size: 0.95em; }
         .comparison-table th { background: #E63312; color: white; padding: 12px; font-size: 1.05em; }
         .comparison-table td { padding: 12px; border: 1px solid #ddd; }
@@ -71,6 +72,8 @@
         .part-topics { margin-top: 25px; }
         .part-topics ul { font-size: 1.1em; line-height: 1.8; }
         .state-box { display: inline-block; padding: 15px 25px; margin: 10px; border: 3px solid #E63312; border-radius: 10px; background: #FFF3E0; color: #1a1a3e; font-weight: 600; font-size: 1.1em; }
+        .smr-diagram { max-height: 280px; object-fit: contain; }
+        .tgp-diagram { max-height: 340px; max-width: auto; object-fit: contain; }
 
         /* Animation System */
         .animate-on-appear { opacity: 0; animation: fadeInUp 0.6s ease forwards; }
@@ -172,14 +175,17 @@
 
         <!-- <p style="font-size: 1.3em; margin: 20px 0;">A classic thought experiment demonstrating the challenges of achieving consensus in distributed systems with unreliable communication.</p> -->
 
-        <div style="text-align: center; margin: 30px 0;">
+        <div style="text-align: center; margin: 3px 0;">
+            <img src="twogeneralsproblem.png" class="tgp-diagram" style="border: 2px solid #E63312; padding: 5px; background: white;"/>
+        </div>
+        <!-- <div style="text-align: center; margin: 30px 0;">
             <div style="background: white; border: 3px solid #E63312; padding: 15px; display: inline-block; max-width: 600px;">
                 <div style="font-size: 3em; margin-bottom: 20px;">⚔️ 👑 ... 🏰 ... 👑 ⚔️</div>
                 <p class="p-action" style="font-size: 1.1em; color: #1a1a3e;"><strong>Two armies on opposite sides of a valley</strong></p>
                 <p class="p-action" style="font-size: 0.95em; margin-top: 15px;">Must coordinate attack time via messengers</p>
                 <p class="p-action" style="font-size: 0.95em;">Messengers can be captured (message loss)</p>
             </div>
-        </div>
+        </div> -->
 
         <div class="box">
             <h4>The Problem</h4>
@@ -528,18 +534,6 @@
         <div style="text-align: center; margin: 3px 0;">
             <img src="SMR.png" alt="SMR Diagram" class="smr-diagram" style="border: 2px solid #E63312; padding: 5px; background: white;"/>
         </div>
-        <!-- <div class="diagram">
-            <div style="text-align: center;">
-                <div style="font-size: 1.2em; margin-bottom: 15px;">Rider Request: Match me with driver</div>
-                <div style="font-size: 2em; color: #E63312;">↓</div>
-                <div style="margin: 20px 0;">
-                    <div class="node">Cairo</div>
-                    <div class="node">Alex</div>
-                    <div class="node">Giza</div>
-                </div>
-                <div style="font-size: 1.1em; margin-top: 15px;">All execute: Match Rider A with Driver B</div>
-            </div>
-        </div> -->
 
         <div class="formula-box">
             <div style="font-size: 0.90em; margin-bottom: 5px;">Rider A Request: Match me with driver</div>
