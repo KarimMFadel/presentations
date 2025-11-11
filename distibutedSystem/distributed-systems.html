@@ -53,7 +53,7 @@
         .comparison-table tr:nth-child(even) { background: #f9f9f9; }
         .icon { font-size: 1.4em; margin-right: 8px; vertical-align: middle; }
         .formula-box { background: linear-gradient(135deg, #E63312 0%, #FF6B35 100%); color: white; padding: 25px; border-radius: 8px; text-align: center; margin: 20px 0; }
-        .formula-box h3 { color: white; font-size: 2.2em; margin: 0; font-weight: 700; }
+        .formula-box h3 { color: white; font-size: 2.0em; margin: 0; font-weight: 700; }
         .formula-box p { color: white; font-size: 1em; margin-top: 8px; }
         .node-rect {
             display: inline-block; width: 200px; height: 110px; background: white; border: 3px solid #E63312; margin: 10px; padding: 10px; text-align: center; vertical-align: top; }
@@ -73,7 +73,7 @@
         .part-topics ul { font-size: 1.1em; line-height: 1.8; }
         .state-box { display: inline-block; padding: 15px 25px; margin: 10px; border: 3px solid #E63312; border-radius: 10px; background: #FFF3E0; color: #1a1a3e; font-weight: 600; font-size: 1.1em; }
         .smr-diagram { max-height: 280px; object-fit: contain; }
-        .tgp-diagram { max-height: 340px; max-width: auto; object-fit: contain; }
+        .tgp-diagram { max-height: 320px; max-width: auto; object-fit: contain; }
 
         /* Animation System */
         .animate-on-appear { opacity: 0; animation: fadeInUp 0.6s ease forwards; }
@@ -191,13 +191,13 @@
             <h4>The Problem</h4>
             <ul>
                 <li>No way to guarantee both generals received and acknowledged the attack plan</li>
-                <li>Demonstrates impossibility of perfect consensus with message loss</li>
-                <li>Foundation for understanding distributed system challenges</li>
+                <li>Demonstrates impossibility of <strong>perfect consensus</strong> with message loss</li>
+                <li>Foundation for understanding <strong>distributed system challenges</strong></li>
             </ul>
         </div>
 
         <div class="highlight" style="font-size: 0.90em;">
-            <strong>Key Insight:</strong> In systems with unreliable communication, perfect consensus is impossible. We need probabilistic approaches and timeouts.
+            <strong>Key Insight:</strong> In systems with unreliable communication, <strong>perfect consensus is impossible</strong>. We need probabilistic approaches and timeouts.
         </div>
     </div>
 
@@ -209,19 +209,19 @@
         <p style="font-size: 1.4em; margin: 25px 0;"><strong>Definition:</strong> A collection of independent computers working together as one system.</p>
 
         <div class="app-header">
-            <h3>🚗 In Our App: Cairo Server + Alex Server + Giza Server = One Platform</h3>
+            <h3>🚗 In Our App: Cairo Node + Alex Node + Giza Node = One Platform</h3>
         </div>
 
         <h3 class="h3-action">Key Characteristics</h3>
         <ul>
-            <li><strong>Components run concurrently</strong> - All servers process rides simultaneously</li>
-            <li><strong>Components operate independently</strong> - Each city has own servers</li>
+            <li><strong>Components run concurrently</strong> - All Nodes/Cities process rides simultaneously</li>
+            <li><strong>Components operate independently</strong> - Each Node/City has own servers</li>
             <li><strong>No global clock</strong> - Different processing times</li>
-            <li><strong>Network communication</strong> - Servers communicate via internet</li>
+            <li><strong>Network communication</strong> - Nodes/Cities communicate via internet</li>
         </ul>
 
         <div class="solution-box">
-            <strong>Benefit:</strong> Riders don't know which server matched them - it just works in seconds!
+            <strong>Benefit:</strong> Riders don't know which Node/City matched them - it just works in seconds!
         </div>
     </div>
 
@@ -271,9 +271,9 @@
         <div class="avenga-logo">avenga</div>
         <h2>When Build Our Riding System using DS?</h2>
 
-        <h3 class="h3-action">Phase 1: Startup - Single Server ❌</h3>
+        <h3 class="h3-action">Phase 1: Startup - Single Node/City ❌</h3>
         <div class="problem-box">
-            <strong>One server in Cairo handling all Egypt</strong>
+            <strong>One Node in Cairo handling all Egypt</strong>
             <ul style="margin-top: 10px;">
                 <li>Server crashes during Friday rush → App down!</li>
                 <li>Matching takes 2 minutes → Riders cancel</li>
@@ -284,11 +284,11 @@
 
         <h3 class="h3-action" style="margin-top: 25px;">Phase 2: Distributed System ✅</h3>
         <div class="solution-box">
-            <strong>Multiple servers across cities</strong>
+            <strong>Multiple Nodes across cities</strong>
             <ul style="margin-top: 10px;">
-                <li>Cairo server crashes → Alex/Giza continue working!</li>
+                <li>Cairo node crashes → Alex/Giza continue working!</li>
                 <li>Matching in < 10 seconds → Happy riders</li>
-                <li>Low latency everywhere → Local servers</li>
+                <li>Low latency everywhere → Local node</li>
                 <li>Handle 10,000+ simultaneous requests</li>
             </ul>
         </div>
@@ -409,7 +409,11 @@
         </div>
 
         <div class="highlight" style="margin-top: 20px;">
-            <strong>Our Choice:</strong> <br><strong>Strong Consistency:</strong> for payment processing - prevents double booking, <br><strong>Eventual Consistency:</strong> for driver rating - can wait a few seconds
+            <strong>Our Choice:</strong> 
+            <ul>
+                <li>Strong Consistency <strong style="color: #E63312;">➜</strong> for payment processing - prevents double booking</li>
+                <li>Eventual Consistency <strong style="color: #E63312;">➜</strong> for driver rating - can wait a few seconds</li>
+            </ul>
         </div>
     </div>
 
@@ -418,10 +422,10 @@
         <div class="avenga-logo">avenga</div>
         <h2>🛡️ Fault Tolerance</h2>
 
-        <p style="font-size: 1.3em; margin: 20px 0;"><strong>Definition:</strong> The ability of a system to continue operating correctly despite failures</p>
+        <p style="font-size: 1.3em; margin: 10px 0;"><strong>Definition:</strong> The ability of a system to continue operating correctly despite failures</p>
 
         <div class="app-header">
-            <h3>⚡ Scenario: Cairo Server Crashes During Rush Hour</h3>
+            <h3>⚡ Scenario: Cairo Node Crashes During Rush Hour</h3>
         </div>
 
         <div class="problem-box">
@@ -429,10 +433,10 @@
         </div>
 
         <div class="solution-box">
-            <strong>With Fault Tolerance:</strong> Alex & Giza servers take over Cairo traffic. Riders experience 2-second delay but rides continue. Nobody notices!
+            <strong>With Fault Tolerance:</strong> Alex & Giza Nodes take over Cairo traffic. Riders experience 2-second delay but rides continue. Nobody notices!
         </div>
 
-        <h3 class="h3-action" style="margin-top: 25px;">Types of Failures</h3>
+        <h3 class="h3-action" style="margin-top: 20px;">Types of Failures</h3>
         <div class="two-column">
             <div class="box">
                 <h4>Fail-Stop (Hard Failures)</h4>
@@ -477,14 +481,14 @@
         <div class="avenga-logo">avenga</div>
         <h2>Nodes/Servers: Compute + State</h2>
 
-        <div class="diagram" style="margin: 20px 0;">
+        <div class="diagram" style="margin: 10px 0;">
             <div class="node-rect">
                 <h4>Node A</h4>
-                <p style="font-size: 1.3em; margin-top: 10px;"><strong>Compute + State</strong></p>
+                <p style="font-size: 1.3em; margin-top: 5px;"><strong>Compute + State</strong></p>
             </div>
             <div class="node-rect">
                 <h4>Node B</h4>
-                <p style="font-size: 1.3em; margin-top: 10px;"><strong>Compute + State</strong></p>
+                <p style="font-size: 1.3em; margin-top: 5px;"><strong>Compute + State</strong></p>
             </div>
         </div>
 
@@ -492,30 +496,30 @@
             <div class="box">
                 <h4>⚡ Compute</h4>
                 <p>Processing power</p>
-                <ul style="font-size: 0.95em; margin-top: 12px;">
+                <ul style="font-size: 0.95em; margin-top: 5px;">
                     <li>CPU resources</li>
                     <li>Application logic</li>
                     <li>Route calculation</li>
                 </ul>
-                <div class="solution-box" style="margin-top: 12px; font-size: 0.9em;">
+                <div class="solution-box" style="margin-top: 5px; font-size: 0.9em;">
                     Find nearest driver within 2km radius
                 </div>
             </div>
             <div class="box">
                 <h4>💾 State</h4>
                 <p>Data storage</p>
-                <ul style="font-size: 0.95em; margin-top: 12px;">
+                <ul style="font-size: 0.95em; margin-top: 5px;">
                     <li>Memory/Disk storage</li>
                     <li>Driver locations</li>
                     <li>Rider profiles</li>
                 </ul>
-                <div class="solution-box" style="margin-top: 12px; font-size: 0.9em;">
+                <div class="solution-box" style="margin-top: 5px; font-size: 0.9em;">
                     Store: Driver A at (30.0444, 31.2357)
                 </div>
             </div>
         </div>
 
-        <div class="app-header" style="margin-top: 25px;">
+        <div class="app-header">
             <h3>Cairo Node + Alex Node + Giza Node = Complete System</h3>
         </div>
 
@@ -529,7 +533,7 @@
         <div class="avenga-logo">avenga</div>
         <h2>State Machine Replication (SMR)</h2>
 
-        <p style="font-size: 1.3em; margin: 5px 0;"><strong>Concept:</strong> Multiple servers execute the <strong>same commands</strong> in the <strong>same order</strong> to maintain identical state</p>
+        <p style="font-size: 1.3em; margin: 5px 0;"><strong>Concept:</strong> Multiple Nodes execute the <strong>same commands</strong> in the <strong>same order</strong> to maintain identical state</p>
 
         <div style="text-align: center; margin: 3px 0;">
             <img src="SMR.png" alt="SMR Diagram" class="smr-diagram" style="border: 2px solid #E63312; padding: 5px; background: white;"/>
@@ -558,7 +562,7 @@
         </div>
 
         <div class="story-box">
-            <p><strong>Scenario:</strong> Cairo server crashed for 30 minutes during rush hour. Alex & Giza handled all requests.</p>
+            <p><strong>Scenario:</strong> Cairo Node crashed for 30 minutes during rush hour. Alex & Giza handled all requests.</p>
             <p style="margin-top: 9px;"><strong>Question:</strong> How does Cairo catch up when it restarts?</p>
         </div>
 
@@ -596,10 +600,10 @@
         </ul>
     </div>
 
-    <!-- Slide 18: Adding Servers -->
+    <!-- Slide 18: Adding Nodes/Servers -->
     <div class="slide slide-white">
         <div class="avenga-logo">avenga</div>
-        <h2>Adding Servers (Scaling!)</h2>
+        <h2>Adding Nodes (Scaling!)</h2>
 
         <div class="app-header">
             <h3>🚀 Expanding to Mansoura & Aswan!</h3>
@@ -608,29 +612,29 @@
         <h3>Methodologies</h3>
 
         <div class="two-column">
-            <div class="box">
-                <h4>1. Copy-Based Replication</h4>
-                <ul style="font-size: 0.95em;">
-                    <li>Take snapshot of Cairo database</li>
-                    <li>Transfer all driver/rider data to new city</li>
-                    <li>New server catches up with recent rides</li>
-                    <li>Joins cluster when synchronized</li>
-                </ul>
-            </div>
-
             <div class="box" style="margin-top: 5px;">
-                <h4>2. Log-Based Replication</h4>
+                <h4>1. Log-Based Replication</h4>
                 <ul style="font-size: 0.95em;">
-                    <li>New city server starts from log beginning</li>
+                    <li>New Node/City starts from log beginning</li>
                     <li>Replays ALL ride events in order</li>
                     <li>Reaches same state as other cities</li>
                     <li>Now all 5 cities have identical data!</li>
                 </ul>
             </div>
+
+            <div class="box">
+                <h4>2. Copy-Based Replication</h4>
+                <ul style="font-size: 0.95em;">
+                    <li>Take snapshot of Cairo Data</li>
+                    <li>Transfer all driver/rider data to new city</li>
+                    <li>New Node/City catches up with recent rides</li>
+                    <li>Joins cluster when synchronized</li>
+                </ul>
+            </div>
         </div>
 
         <div class="solution-box" style="margin-top: 5px;">
-            System can now handle 2 city failures! Even if Cairo & Alex crash, Giza + Mansoura + Aswan continue!
+            System can now handle 2 nodes/cities failures! Even if Cairo & Alex crash, Giza + Mansoura + Aswan continue!
         </div>
     </div>
 
@@ -639,7 +643,10 @@
         <div class="avenga-logo">avenga</div>
         <h2>Quorums & Majority</h2>
 
-        <p style="font-size: 1.2em; margin: 18px 0;"><strong>Quorum:</strong> Minimum nodes that must agree</p>
+        <div>
+            <p style="font-size: 1.2em; margin: 18px 0;"><strong>Quorum:</strong> Minimum nodes that must agree</p>
+            <p style="font-size: 1.2em; margin: 18px 0;"><strong>Majority:</strong> is one type of <strong>Quorum</strong></p>
+        </div>
 
         <div class="formula-box">
             <h3>R + W > N</h3>
@@ -648,7 +655,7 @@
         </div>
 
         <div class="app-header">
-            <h3>💡 With 5 City Servers</h3>
+            <h3>💡 With 5 City Nodes</h3>
         </div>
 
         <div class="two-column">
@@ -656,20 +663,16 @@
                 <h4>Example: N=5, W=2</h4>
                 <p style="font-size: 0.95em; margin: 10px 0;">R + W > N → R + 2 > 5 → <strong>R = 4</strong></p>
                 <div class="solution-box" style="font-size: 0.9em;">
-                    Fast ride matching (only 2 cities confirm), but location reads need 4 cities
+                    Fast ride matching (only 2 Nodes/Cities confirm), but location reads need 4 Nodes/Cities
                 </div>
             </div>
             <div class="box">
                 <h4>Majority: N=5 → Need 3</h4>
                 <p style="font-size: 0.95em; margin: 10px 0;">(N/2) + 1 = (5/2) + 1 = <strong>3</strong></p>
                 <div class="solution-box" style="font-size: 0.9em;">
-                    Before confirming ride match, 3 cities must agree. Can tolerate 2 failures!
+                    Before confirming ride match, 3 Nodes/Cities must agree. Can tolerate 2 failures!
                 </div>
             </div>
-        </div>
-
-        <div class="highlight" style="margin-top: 18px;">
-            <strong>Key:</strong> Majority prevents double-booking drivers across cities!
         </div>
     </div>
 
@@ -677,8 +680,6 @@
     <div class="slide slide-white">
         <div class="avenga-logo">avenga</div>
         <h2>Quorum vs Majority Comparison</h2>
-
-        <p style="font-size: 1.2em; margin: 18px 0;"><strong>Majority</strong> is one type of <strong>Quorum</strong></p>
 
         <table class="comparison-table">
             <tr>
@@ -712,6 +713,10 @@
                 <td>Strong guaranteed</td>
             </tr>
         </table>
+
+        <div class="highlight" style="margin-top: 18px;">
+            <strong>Key:</strong> Majority prevents double-booking drivers across cities!
+        </div>
 
         <div class="story-box" style="margin-top: 20px;">
             <p><strong>Our Decision:</strong> Majority (3 of 5) for ride matching to ensure no driver gets double-booked!</p>
